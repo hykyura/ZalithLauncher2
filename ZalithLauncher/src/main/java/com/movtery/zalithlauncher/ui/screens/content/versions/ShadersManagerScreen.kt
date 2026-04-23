@@ -100,8 +100,6 @@ import com.movtery.zalithlauncher.ui.components.ScalingLabel
 import com.movtery.zalithlauncher.ui.components.SimpleAlertDialog
 import com.movtery.zalithlauncher.ui.components.SimpleTextInputField
 import com.movtery.zalithlauncher.ui.components.fadeEdge
-import com.movtery.zalithlauncher.ui.components.itemLayoutColor
-import com.movtery.zalithlauncher.ui.components.itemLayoutShadowElevation
 import com.movtery.zalithlauncher.ui.screens.NestedNavKey
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
@@ -116,6 +114,8 @@ import com.movtery.zalithlauncher.ui.screens.content.versions.elements.ShaderOpe
 import com.movtery.zalithlauncher.ui.screens.content.versions.elements.ShaderPackInfo
 import com.movtery.zalithlauncher.ui.screens.content.versions.elements.filterShaders
 import com.movtery.zalithlauncher.ui.screens.content.versions.layouts.VersionChunkBackground
+import com.movtery.zalithlauncher.ui.theme.itemColor
+import com.movtery.zalithlauncher.ui.theme.onItemColor
 import com.movtery.zalithlauncher.utils.animation.getAnimateTween
 import com.movtery.zalithlauncher.utils.animation.swapAnimateDpAsState
 import com.movtery.zalithlauncher.utils.file.formatFileSize
@@ -148,7 +148,7 @@ private class ShadersManageViewModel(
     /**
      * 已选择的文件
      */
-    val selectedFiles = mutableStateListOf<File>()
+    val selectedPacks = mutableStateListOf<ShaderPackInfo>()
 
     /**
      * 删除所有已选择文件的操作流程
@@ -159,16 +159,21 @@ private class ShadersManageViewModel(
      * 全选所有文件
      */
     fun selectAllFiles() {
-        allShaders.forEach { info ->
-            val file = info.file
-            if (!selectedFiles.contains(file)) selectedFiles.add(file)
+        filteredShaders?.forEach { pack ->
+            if (!selectedPacks.contains(pack)) selectedPacks.add(pack)
+        }
+    }
+
+    fun clearSelected() {
+        filteredShaders?.let {
+            selectedPacks.removeAll(it)
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
             shadersState = LoadingState.Loading
-            selectedFiles.clear()
+            selectedPacks.clear()
 
             withContext(Dispatchers.IO) {
                 try {
@@ -334,18 +339,21 @@ fun ShadersManagerScreen(
                             onToggleSortOrder = { viewModel.updateSortOrder() },
                             shadersDir = shadersDir,
                             onDeleteAll = {
+                                val selected = viewModel.selectedPacks
                                 if (
                                     viewModel.deleteAllOperation == DeleteAllOperation.None &&
-                                    viewModel.selectedFiles.isNotEmpty()
+                                    selected.isNotEmpty()
                                 ) {
                                     viewModel.deleteAllOperation = DeleteAllOperation.Warning(
-                                        files = viewModel.selectedFiles
+                                        files = selected.map { pack ->
+                                            pack.file
+                                        }
                                     )
                                 }
                             },
-                            isFilesSelected = viewModel.selectedFiles.isNotEmpty(),
+                            isFilesSelected = viewModel.selectedPacks.isNotEmpty(),
                             onSelectAll = { viewModel.selectAllFiles() },
-                            onClearFilesSelected = { viewModel.selectedFiles.clear() },
+                            onClearFilesSelected = { viewModel.clearSelected() },
                             swapToDownload = swapToDownload,
                             refresh = { viewModel.refresh() },
                             submitError = submitError
@@ -356,9 +364,9 @@ fun ShadersManagerScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             shadersList = viewModel.filteredShaders,
-                            selectedFiles = viewModel.selectedFiles,
-                            removeFromSelected = { viewModel.selectedFiles.remove(it) },
-                            addToSelected = { viewModel.selectedFiles.add(it) },
+                            selectedPacks = viewModel.selectedPacks,
+                            removeFromSelected = { viewModel.selectedPacks.remove(it) },
+                            addToSelected = { viewModel.selectedPacks.add(it) },
                             updateOperation = { shaderOperation = it }
                         )
                     }
@@ -391,8 +399,8 @@ private fun ShadersActionsHeader(
     swapToDownload: () -> Unit,
     refresh: () -> Unit,
     submitError: (ErrorViewModel.ThrowableMessage) -> Unit,
-    inputFieldColor: Color = itemLayoutColor(),
-    inputFieldContentColor: Color = MaterialTheme.colorScheme.onSurface
+    inputFieldColor: Color = itemColor(),
+    inputFieldContentColor: Color = onItemColor(),
 ) {
     CardTitleLayout(modifier = modifier) {
         BoxWithConstraints(
@@ -542,9 +550,9 @@ private fun ShadersActionsHeader(
 private fun ShadersList(
     modifier: Modifier = Modifier,
     shadersList: List<ShaderPackInfo>?,
-    selectedFiles: List<File>,
-    removeFromSelected: (File) -> Unit,
-    addToSelected: (File) -> Unit,
+    selectedPacks: List<ShaderPackInfo>,
+    removeFromSelected: (ShaderPackInfo) -> Unit,
+    addToSelected: (ShaderPackInfo) -> Unit,
     updateOperation: (ShaderOperation) -> Unit
 ) {
     shadersList?.let { list ->
@@ -559,12 +567,12 @@ private fun ShadersList(
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
                         shaderPackInfo = info,
-                        selected = selectedFiles.contains(info.file),
+                        selected = selectedPacks.contains(info),
                         onClick = {
-                            if (selectedFiles.contains(info.file)) {
-                                removeFromSelected(info.file)
+                            if (selectedPacks.contains(info)) {
+                                removeFromSelected(info)
                             } else {
-                                addToSelected(info.file)
+                                addToSelected(info)
                             }
                         },
                         updateOperation = updateOperation
@@ -599,11 +607,10 @@ private fun ShaderPackItem(
     selected: Boolean,
     onClick: () -> Unit = {},
     updateOperation: (ShaderOperation) -> Unit,
-    itemColor: Color = itemLayoutColor(),
-    itemContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    itemColor: Color = itemColor(),
+    itemContentColor: Color = onItemColor(),
     borderColor: Color = MaterialTheme.colorScheme.primary,
     shape: Shape = MaterialTheme.shapes.large,
-    shadowElevation: Dp = itemLayoutShadowElevation()
 ) {
     val borderWidth by animateDpAsState(
         if (selected) 2.dp
@@ -627,7 +634,6 @@ private fun ShaderPackItem(
         shape = shape,
         color = itemColor,
         contentColor = itemContentColor,
-        shadowElevation = shadowElevation
     ) {
         Row(
             modifier = Modifier.padding(all = 8.dp),

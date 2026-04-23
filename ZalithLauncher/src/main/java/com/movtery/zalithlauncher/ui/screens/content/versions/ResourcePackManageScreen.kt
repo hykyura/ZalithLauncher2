@@ -108,8 +108,6 @@ import com.movtery.zalithlauncher.ui.components.SimpleAlertDialog
 import com.movtery.zalithlauncher.ui.components.SimpleTextInputField
 import com.movtery.zalithlauncher.ui.components.TooltipIconButton
 import com.movtery.zalithlauncher.ui.components.fadeEdge
-import com.movtery.zalithlauncher.ui.components.itemLayoutColor
-import com.movtery.zalithlauncher.ui.components.itemLayoutShadowElevation
 import com.movtery.zalithlauncher.ui.screens.NestedNavKey
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
@@ -126,6 +124,8 @@ import com.movtery.zalithlauncher.ui.screens.content.versions.elements.ResourceP
 import com.movtery.zalithlauncher.ui.screens.content.versions.elements.ResourcePackOperation
 import com.movtery.zalithlauncher.ui.screens.content.versions.elements.filterPacks
 import com.movtery.zalithlauncher.ui.screens.content.versions.layouts.VersionChunkBackground
+import com.movtery.zalithlauncher.ui.theme.itemColor
+import com.movtery.zalithlauncher.ui.theme.onItemColor
 import com.movtery.zalithlauncher.utils.animation.getAnimateTween
 import com.movtery.zalithlauncher.utils.animation.swapAnimateDpAsState
 import com.movtery.zalithlauncher.utils.file.formatFileSize
@@ -159,7 +159,7 @@ private class ResourcePackManageViewModel(
     /**
      * 已选择的文件
      */
-    val selectedFiles = mutableStateListOf<File>()
+    val selectedPacks = mutableStateListOf<ResourcePackInfo>()
 
     /**
      * 删除所有已选择文件的操作流程
@@ -170,16 +170,21 @@ private class ResourcePackManageViewModel(
      * 全选所有文件
      */
     fun selectAllFiles() {
-        allPacks.forEach { pack ->
-            val file = pack.file
-            if (!selectedFiles.contains(file)) selectedFiles.add(file)
+        filteredPacks?.forEach { pack ->
+            if (!selectedPacks.contains(pack)) selectedPacks.add(pack)
+        }
+    }
+
+    fun clearSelected() {
+        filteredPacks?.let {
+            selectedPacks.removeAll(it)
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
             packState = LoadingState.Loading
-            selectedFiles.clear()
+            selectedPacks.clear()
 
             withContext(Dispatchers.IO) {
                 val tempList = mutableListOf<ResourcePackInfo>()
@@ -342,18 +347,21 @@ fun ResourcePackManageScreen(
                             onToggleSortOrder = { viewModel.updateSortOrder() },
                             resourcePackDir = resourcePackDir,
                             onDeleteAll = {
+                                val selected = viewModel.selectedPacks
                                 if (
                                     viewModel.deleteAllOperation == DeleteAllOperation.None &&
-                                    viewModel.selectedFiles.isNotEmpty()
+                                    selected.isNotEmpty()
                                 ) {
                                     viewModel.deleteAllOperation = DeleteAllOperation.Warning(
-                                        files = viewModel.selectedFiles
+                                        files = selected.map { pack ->
+                                            pack.file
+                                        }
                                     )
                                 }
                             },
-                            isFilesSelected = viewModel.selectedFiles.isNotEmpty(),
+                            isFilesSelected = viewModel.selectedPacks.isNotEmpty(),
                             onSelectAll = { viewModel.selectAllFiles() },
-                            onClearFilesSelected = { viewModel.selectedFiles.clear() },
+                            onClearFilesSelected = { viewModel.clearSelected() },
                             swapToDownload = swapToDownload,
                             onRefresh = {
                                 viewModel.refresh()
@@ -366,9 +374,9 @@ fun ResourcePackManageScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             packList = viewModel.filteredPacks,
-                            selectedFiles = viewModel.selectedFiles,
-                            removeFromSelected = { viewModel.selectedFiles.remove(it) },
-                            addToSelected = { viewModel.selectedFiles.add(it) },
+                            selectedPacks = viewModel.selectedPacks,
+                            removeFromSelected = { viewModel.selectedPacks.remove(it) },
+                            addToSelected = { viewModel.selectedPacks.add(it) },
                             updateOperation = { resourcePackOperation = it }
                         )
                     }
@@ -401,8 +409,8 @@ private fun ResourcePackHeader(
     swapToDownload: () -> Unit,
     onRefresh: () -> Unit,
     submitError: (ErrorViewModel.ThrowableMessage) -> Unit,
-    inputFieldColor: Color = itemLayoutColor(),
-    inputFieldContentColor: Color = MaterialTheme.colorScheme.onSurface
+    inputFieldColor: Color = itemColor(),
+    inputFieldContentColor: Color = onItemColor()
 ) {
     CardTitleLayout(modifier = modifier) {
         BoxWithConstraints(
@@ -564,9 +572,9 @@ private fun ResourcePackHeader(
 private fun ResourcePackList(
     modifier: Modifier = Modifier,
     packList: List<ResourcePackInfo>?,
-    selectedFiles: List<File>,
-    removeFromSelected: (File) -> Unit,
-    addToSelected: (File) -> Unit,
+    selectedPacks: List<ResourcePackInfo>,
+    removeFromSelected: (ResourcePackInfo) -> Unit,
+    addToSelected: (ResourcePackInfo) -> Unit,
     updateOperation: (ResourcePackOperation) -> Unit
 ) {
     packList?.let { list ->
@@ -581,12 +589,12 @@ private fun ResourcePackList(
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
                         resourcePackInfo = pack,
-                        selected = selectedFiles.contains(pack.file),
+                        selected = selectedPacks.contains(pack),
                         onClick = {
-                            if (selectedFiles.contains(pack.file)) {
-                                removeFromSelected(pack.file)
+                            if (selectedPacks.contains(pack)) {
+                                removeFromSelected(pack)
                             } else {
-                                addToSelected(pack.file)
+                                addToSelected(pack)
                             }
                         },
                         updateOperation = updateOperation
@@ -621,11 +629,10 @@ private fun ResourcePackItemLayout(
     resourcePackInfo: ResourcePackInfo,
     selected: Boolean,
     onClick: () -> Unit = {},
-    itemColor: Color = itemLayoutColor(),
-    itemContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    itemColor: Color = itemColor(),
+    itemContentColor: Color = onItemColor(),
     borderColor: Color = MaterialTheme.colorScheme.primary,
     shape: Shape = MaterialTheme.shapes.large,
-    shadowElevation: Dp = itemLayoutShadowElevation(),
     updateOperation: (ResourcePackOperation) -> Unit
 ) {
     val borderWidth by animateDpAsState(
@@ -650,7 +657,6 @@ private fun ResourcePackItemLayout(
         shape = shape,
         color = itemColor,
         contentColor = itemContentColor,
-        shadowElevation = shadowElevation
     ) {
         Row(
             modifier = Modifier.padding(all = 8.dp),

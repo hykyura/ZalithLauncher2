@@ -166,7 +166,6 @@
     <string name="account_add_new_server_button">Добавить сервер</string>
     <string name="account_add_new_account">Добавить аккаунт</string>
     <string name="account_label_username">Имя пользователя</string>
-    <string name="account_label_server_url">URL API Yggdrasil</string>
     <string name="account_label_email">Электронная почта или имя пользователя</string>
     <string name="account_label_password">Пароль</string>
     <string name="account_change_skin">Сменить скин</string>
@@ -251,7 +250,6 @@
     <string name="versions_manage_game_path_error_title">Возникла проблема при работе с каталогом игры</string>
     <string name="versions_manage_no_versions">Нет установленных версий</string>
     <string name="versions_manage_install_exists">Название версии уже существует!</string>
-    <string name="versions_manage_install_cannot_use_mc_name">Не используйте ванильные названия для модифицированных версий.</string>
     <string name="versions_manage_invalid">Недопустимая версия</string>
     <string name="versions_manage_rename_version">Переименовать сборку</string>
     <string name="versions_manage_copy_version">Копировать версию</string>

@@ -112,7 +112,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -152,9 +151,11 @@ import com.movtery.zalithlauncher.ui.components.SimpleListDialog
 import com.movtery.zalithlauncher.ui.components.SimpleListItem
 import com.movtery.zalithlauncher.ui.components.SingleLineTextCheck
 import com.movtery.zalithlauncher.ui.components.fadeEdge
-import com.movtery.zalithlauncher.ui.components.itemLayoutColor
-import com.movtery.zalithlauncher.ui.components.itemLayoutShadowElevation
 import com.movtery.zalithlauncher.ui.screens.main.control_editor.InfoLayoutTextItem
+import com.movtery.zalithlauncher.ui.theme.cardColor
+import com.movtery.zalithlauncher.ui.theme.itemColor
+import com.movtery.zalithlauncher.ui.theme.onCardColor
+import com.movtery.zalithlauncher.ui.theme.onItemColor
 import com.movtery.zalithlauncher.utils.animation.getAnimateTween
 import com.movtery.zalithlauncher.utils.logging.Logger.lError
 import java.io.File
@@ -202,15 +203,10 @@ sealed interface LocalLoginOperation {
  */
 sealed interface ServerOperation {
     data object None : ServerOperation
-
     /** 添加认证服务器对话框 */
     data object AddNew : ServerOperation
-
     /** 删除认证服务器对话框 */
     data class Delete(val server: AuthServer) : ServerOperation
-
-    /** 添加认证服务器 */
-    data class Add(val serverUrl: String) : ServerOperation
     data class OnThrowable(val throwable: Throwable) : ServerOperation
 }
 
@@ -330,9 +326,9 @@ fun AccountItem(
     modifier: Modifier = Modifier,
     currentAccount: Account?,
     account: Account,
-    color: Color = itemLayoutColor(),
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    shadowElevation: Dp = itemLayoutShadowElevation(),
+    color: Color = itemColor(),
+    contentColor: Color = onItemColor(),
+    enabled: Boolean = true,
     refreshKey: Any? = null,
     onSelected: (Account) -> Unit = {},
     openChangeSkinDialog: () -> Unit = {},
@@ -350,11 +346,11 @@ fun AccountItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
-        shadowElevation = shadowElevation,
         onClick = {
-            if (selected) return@Surface
+            if (selected || !enabled) return@Surface
             onSelected(account)
-        }
+        },
+        enabled = enabled
     ) {
         Row(
             modifier = Modifier
@@ -365,9 +361,10 @@ fun AccountItem(
             RadioButton(
                 selected = selected,
                 onClick = {
-                    if (selected) return@RadioButton
+                    if (selected || !enabled) return@RadioButton
                     onSelected(account)
-                }
+                },
+                enabled = enabled
             )
             PlayerFace(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -467,6 +464,8 @@ fun LoginMenuDialog(
                     .fillMaxWidth()
                     .heightIn(max = maxHeight - 12.dp),
                 shape = MaterialTheme.shapes.extraLarge,
+                color = cardColor(false),
+                contentColor = onCardColor(),
                 shadowElevation = 6.dp
             ) {
                 Column(
@@ -752,6 +751,8 @@ fun LocalLoginDialog(
                     .heightIn(max = maxHeight - 12.dp)
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                color = cardColor(false),
+                contentColor = onCardColor(),
                 shadowElevation = 6.dp
             ) {
                 Column(
@@ -975,6 +976,8 @@ fun OtherServerLoginDialog(
                     .heightIn(max = maxHeight - 12.dp)
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                color = cardColor(false),
+                contentColor = onCardColor(),
                 shadowElevation = 6.dp
             ) {
                 Column(
@@ -1241,6 +1244,8 @@ fun ChangeSkinDialog(
                     .fillMaxHeight(0.85f)
                     .heightIn(max = maxHeight - 12.dp),
                 shape = MaterialTheme.shapes.extraLarge,
+                color = cardColor(false),
+                contentColor = onCardColor(),
                 shadowElevation = 6.dp
             ) {
                 Column(
@@ -1258,7 +1263,7 @@ fun ChangeSkinDialog(
                                 .fillMaxHeight()
                                 .weight(1f)
                                 .clip(MaterialTheme.shapes.large)
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                .background(itemColor(false)),
                             contentAlignment = Alignment.Center
                         ) {
                             var pageFinished by remember { mutableStateOf(false) }

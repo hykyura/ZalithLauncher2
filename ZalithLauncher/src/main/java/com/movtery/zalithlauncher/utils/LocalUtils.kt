@@ -378,14 +378,21 @@ private fun formatWithUnit(value: Double, unit: String): String {
 fun isChinaMainland(): Boolean {
     val timeZone = TimeZone.getDefault()
 
-    if (timeZone.id == "Asia/Shanghai") return true
+    if (
+        timeZone.id in listOf(
+            "Asia/Shanghai",
+            "Asia/Chongqing",//历史遗留
+            "Asia/Urumqi"
+        )
+    ) return true
 
     val offsetMillis = timeZone.getOffset(System.currentTimeMillis())
     val isUtcPlus8 = offsetMillis == 8 * 60 * 60 * 1000
 
     if (!isUtcPlus8) return false
 
-    return Locale.getDefault().country.equals("CN", ignoreCase = true)
+    //应用内支持修改语言，不能再以语言来进行判断
+    return /*Locale.getDefault().country.equals("CN", ignoreCase = true)*/false
 }
 
 /**
@@ -419,6 +426,25 @@ fun isChineseLocale(locale: Locale): Boolean {
         "SG", //新加坡
         "MY"  //马来西亚
     )
+}
+
+fun isInGreaterChina(): Boolean {
+    return isChinaTimeZone() || Locale.getDefault().language == "zh"
+}
+
+/**
+ * 判断当前时区是否属于中国
+ */
+private fun isChinaTimeZone(): Boolean {
+    return when (TimeZone.getDefault().id) {
+        "Asia/Shanghai",
+        "Asia/Chongqing",//历史遗留
+        "Asia/Hong_Kong",
+        "Asia/Macao",
+        "Asia/Taipei",
+        "Asia/Urumqi" -> true
+        else -> false
+    }
 }
 
 /**

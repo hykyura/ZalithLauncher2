@@ -21,6 +21,7 @@ package com.movtery.zalithlauncher.game.download.jvm_server
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.compose.ui.unit.IntSize
@@ -49,12 +50,20 @@ import java.net.InetSocketAddress
 
 class JvmService : Service() {
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val notificationId: Int = 1
+    private val notificationId: Int = 1001
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val jvmArgs = intent?.extras?.getString(SERVICE_JVM_ARGS) ?: error("The JVM parameters must be set.")
+        //立即尝试启动前台服务，防止启动超时
+        postNotification()
+
+        if (intent == null) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
+        val jvmArgs = intent.extras?.getString(SERVICE_JVM_ARGS) ?: error("The JVM parameters must be set.")
         val jreName = intent.extras?.getString(SERVICE_JRE_NAME)
         val userHome = intent.extras?.getString(SERVICE_USER_HOME)
         val postSummary = intent.extras?.getString(SERVICE_POST_SUMMARY)
@@ -77,6 +86,8 @@ class JvmService : Service() {
                 userHome = userHome,
                 onExit = { code, _ ->
                     lInfo("Process exit with code $code")
+                    //移除前台通知再停止服务，让系统知道这是正常关闭
+                    stopForeground(STOP_FOREGROUND_REMOVE)
                     scope.launch(Dispatchers.IO) {
                         sendCode(code)
                         stopSelf()
@@ -126,10 +137,20 @@ class JvmService : Service() {
                     )
                 }
             }
+            .setOngoing(true) //持续通知
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setSmallIcon(R.mipmap.ic_launcher)
             .build()
 
-        startForeground(notificationId, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                notificationId,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            )
+        } else {
+            startForeground(notificationId, notification)
+        }
     }
 
     private suspend fun preLaunch(
@@ -158,19 +179,19 @@ class JvmService : Service() {
         launcher: Launcher,
         onExit: (code: Int, isSignal: Boolean) -> Unit
     ): Unit = withContext(Dispatchers.IO) {
-        withContext(Dispatchers.Main) {
-            //在主线程加载 exec
-            NativeLibraryLoader.loadPojavLib()
-        }
-
-        //开始记录日志
-        val logFile = File(PathManager.DIR_FILES_EXTERNAL, "latest_process.log")
-        if (!logFile.exists() && !logFile.createNewFile()) throw IOException("Failed to create a new log file")
-        LoggerBridge.start(logFile.absolutePath)
-
-        lInfo("start jvm!")
-
         val code = runCatching {
+            withContext(Dispatchers.Main) {
+                //在主线程加载 exec
+                NativeLibraryLoader.loadPojavLib()
+            }
+
+            //开始记录日志
+            val logFile = File(PathManager.DIR_FILES_EXTERNAL, "latest_process.log")
+            if (!logFile.exists() && !logFile.createNewFile()) throw IOException("Failed to create a new log file")
+            LoggerBridge.start(logFile.absolutePath)
+
+            lInfo("start jvm!")
+
             launcher.launch(
                 screenSize = IntSize(1920, 1080) //fake
             )

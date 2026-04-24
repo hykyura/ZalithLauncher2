@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -919,7 +920,7 @@ private fun GameInfoBox(
 @Preview(showBackground = false)
 @Composable
 private fun PreviewGameInfoBox() {
-    MaterialTheme {
+    MaterialExpressiveTheme {
         GameInfoBox(
             versionName = "1.21.11",
             versionInfo = "1.21.11",

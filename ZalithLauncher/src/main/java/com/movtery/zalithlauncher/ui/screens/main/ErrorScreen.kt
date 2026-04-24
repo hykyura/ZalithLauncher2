@@ -39,6 +39,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -401,7 +402,7 @@ private fun ActionLayout(
 @Preview
 @Composable
 private fun PreviewErrorScreen() {
-    MaterialTheme {
+    MaterialExpressiveTheme {
         ErrorScreen(
             crashType = CrashType.LAUNCHER_CRASH,
             shareLogs = true,

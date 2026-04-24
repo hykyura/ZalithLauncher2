@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -863,7 +864,7 @@ private fun AccountOperation(
 @Composable
 private fun AccountManageContentPreview() {
     CompositionLocalProvider(LocalBackgroundViewModel provides null) {
-        MaterialTheme {
+        MaterialExpressiveTheme {
             Surface {
                 AccountManageContent(
                     isVisible = true,

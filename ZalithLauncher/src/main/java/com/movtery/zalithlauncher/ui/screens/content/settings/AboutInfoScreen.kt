@@ -31,10 +31,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -107,12 +107,12 @@ fun AboutInfoScreen(
                             title = InfoDistributor.LAUNCHER_NAME,
                             text = stringResource(R.string.about_launcher_version, BuildConfig.VERSION_NAME),
                             button = {
-                                OutlinedButton(
+                                Button(
                                     onClick = checkUpdate
                                 ) {
                                     Text(text = stringResource(R.string.upgrade_title))
                                 }
-                                OutlinedButton(
+                                Button(
                                     onClick = { openLink(URL_PROJECT) }
                                 ) {
                                     Text(text = stringResource(R.string.about_launcher_project_link))
@@ -125,7 +125,7 @@ fun AboutInfoScreen(
                             title = stringResource(R.string.about_launcher_author_movtery_title),
                             text = stringResource(R.string.about_launcher_author_movtery_text, InfoDistributor.LAUNCHER_NAME),
                             button = {
-                                OutlinedButton(
+                                Button(
                                     onClick = { openLink(URL_SUPPORT) }
                                 ) {
                                     Text(text = stringResource(R.string.about_sponsor))
@@ -147,7 +147,7 @@ fun AboutInfoScreen(
                             title = "bangbang93",
                             text = stringResource(R.string.about_acknowledgements_bangbang93_text, InfoDistributor.LAUNCHER_SHORT_NAME),
                             button = {
-                                OutlinedButton(
+                                Button(
                                     onClick = { openLink("https://afdian.com/a/bangbang93") }
                                 ) {
                                     Text(text = stringResource(R.string.about_sponsor))
@@ -179,7 +179,7 @@ fun AboutInfoScreen(
                             title = "mcmod-info-mirror",
                             text = stringResource(R.string.about_acknowledgements_mcim_text, InfoDistributor.LAUNCHER_SHORT_NAME),
                             button = {
-                                OutlinedButton(
+                                Button(
                                     onClick = { openLink("https://www.mcimirror.top/sponsor") }
                                 ) {
                                     Text(text = stringResource(R.string.about_sponsor))

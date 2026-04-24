@@ -63,6 +63,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -557,7 +558,7 @@ fun LoginMenuDialog(
 @Preview(showBackground = true, widthDp = 800, heightDp = 480)
 @Composable
 private fun PreviewLoginMenuDialog() {
-    MaterialTheme {
+    MaterialExpressiveTheme {
         LoginMenuDialog(
             onDismissRequest = {},
             onMicrosoftLogin = {},
@@ -594,7 +595,7 @@ fun LoginItem(
 @Preview(showBackground = true, widthDp = 400, heightDp = 120)
 @Composable
 private fun PreviewLoginItem() {
-    MaterialTheme {
+    MaterialExpressiveTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             LoginItem(
                 modifier = Modifier

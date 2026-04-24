@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.SelectableChipElevation
 import androidx.compose.runtime.Composable
@@ -62,8 +63,13 @@ fun CheckChip(
         leadingIcon = {
             AnimatedVisibility(
                 visible = selected,
-                enter = expandIn(expandFrom = Alignment.CenterStart) + fadeIn(),
-                exit = shrinkOut(shrinkTowards = Alignment.CenterStart) + fadeOut()
+                enter = expandIn(
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                    expandFrom = Alignment.CenterStart
+                ) + fadeIn(),
+                exit = shrinkOut(
+                    shrinkTowards = Alignment.CenterStart
+                ) + fadeOut()
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_check),

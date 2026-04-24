@@ -265,7 +265,7 @@ fun VersionSettingsScreen(
 }
 
 private val settingItems = listOf(
-    CategoryItem(NormalNavKey.Versions.OverView, { CategoryIcon(R.drawable.ic_dashboard_filled, R.string.versions_settings_overview) }, R.string.versions_settings_overview),
+    CategoryItem(NormalNavKey.Versions.OverView, { CategoryIcon(R.drawable.ic_dashboard_outlined, R.string.versions_settings_overview) }, R.string.versions_settings_overview),
     CategoryItem(NormalNavKey.Versions.Config, { CategoryIcon(R.drawable.ic_build_outlined, R.string.versions_settings_config) }, R.string.versions_settings_config),
     CategoryItem(NormalNavKey.Versions.UpdateLoader, { CategoryIcon(R.drawable.ic_update, R.string.versions_update_loader) }, R.string.versions_update_loader),
     CategoryItem(NormalNavKey.Versions.ModsManager, { CategoryIcon(R.drawable.ic_extension_outlined, R.string.mods_manage) }, R.string.mods_manage, division = true),

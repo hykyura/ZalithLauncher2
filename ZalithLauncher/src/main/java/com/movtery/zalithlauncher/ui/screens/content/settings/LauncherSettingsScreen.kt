@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -83,7 +82,6 @@ import com.movtery.zalithlauncher.utils.logging.Logger.lError
 import com.movtery.zalithlauncher.utils.string.getMessageOrToString
 import com.movtery.zalithlauncher.viewmodel.BackgroundViewModel
 import com.movtery.zalithlauncher.viewmodel.ErrorViewModel
-import com.movtery.zalithlauncher.viewmodel.EventViewModel
 import com.movtery.zalithlauncher.viewmodel.LocalBackgroundViewModel
 import kotlinx.coroutines.Dispatchers
 import java.io.File
@@ -99,7 +97,6 @@ fun LauncherSettingsScreen(
     key: NestedNavKey.Settings,
     settingsScreenKey: TitledNavKey?,
     mainScreenKey: TitledNavKey?,
-    eventViewModel: EventViewModel,
     submitError: (ErrorViewModel.ThrowableMessage) -> Unit
 ) {
     val context = LocalContext.current
@@ -190,10 +187,7 @@ fun LauncherSettingsScreen(
                         position = CardPosition.Bottom,
                         unit = AllSettings.launcherFullScreen,
                         title = stringResource(R.string.settings_launcher_full_screen_title),
-                        summary = stringResource(R.string.settings_launcher_full_screen_summary),
-                        onCheckedChange = {
-                            eventViewModel.sendEvent(EventViewModel.Event.RefreshFullScreen)
-                        }
+                        summary = stringResource(R.string.settings_launcher_full_screen_summary)
                     )
                 }
             }
@@ -488,7 +482,7 @@ private fun CustomBackground(
             visible = backgroundViewModel.isValid
         ) {
             IconTextButton(
-                imageVector = Icons.Default.RestartAlt,
+                painter = painterResource(R.drawable.ic_restart_alt),
                 text = stringResource(R.string.generic_reset),
                 onClick = {
                     if (operation == BackgroundOperation.None) {

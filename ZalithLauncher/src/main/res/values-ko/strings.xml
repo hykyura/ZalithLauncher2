@@ -566,7 +566,6 @@
     <string name="versions_manage_category_modloader">모드</string>
     <string name="versions_manage_pin">고정</string>
     <string name="versions_manage_install_exists">이미 존재하는 버전 이름입니다!</string>
-    <string name="versions_manage_install_cannot_use_mc_name">모드 버전에는 바닐라 버전의 이름을 사용할 수 없습니다.</string>
     <string name="versions_manage_invalid">올바르지 않은 버전입니다</string>
     <string name="versions_manage_rename_version">버전명 변경</string>
     <string name="versions_manage_copy_version">버전 복사</string>

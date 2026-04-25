@@ -71,7 +71,7 @@ android {
         applicationId = zalithPackageName
         applicationIdSuffix = ".v2"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = launcherVersionCode
         versionName = launcherVersionName
         manifestPlaceholders["launcher_name"] = launcherAPPName
@@ -238,8 +238,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
-    implementation(libs.androidx.material.icons.core)
-    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.navigation3.runtime)

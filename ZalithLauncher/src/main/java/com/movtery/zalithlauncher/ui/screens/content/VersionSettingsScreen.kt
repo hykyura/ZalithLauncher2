@@ -240,6 +240,7 @@ fun VersionSettingsScreen(
                 isVisible = isVisible,
                 backStack = key.backStack,
                 versionsScreenKey = key.currentKey,
+                canUpdateLoader = loaderInfo == null || loaderInfo.loader.autoDownloadable,
                 isUpdateLoader = loaderInfo != null && loaderInfo.loader.autoDownloadable,
                 modifier = Modifier.fillMaxHeight()
             )
@@ -281,6 +282,7 @@ private fun TabMenu(
     isVisible: Boolean,
     backStack: NavBackStack<TitledNavKey>,
     versionsScreenKey: TitledNavKey?,
+    canUpdateLoader: Boolean,
     isUpdateLoader: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -302,6 +304,11 @@ private fun TabMenu(
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         settingItems.forEach { item ->
+            if (item.key == NormalNavKey.Versions.UpdateLoader && !canUpdateLoader) {
+                //不支持自动更新安装，不放置“更新加载器/安装加载器”入口
+                return@forEach
+            }
+
             if (item.division) {
                 HorizontalDivider(
                     modifier = Modifier
@@ -410,6 +417,7 @@ private fun NavigationUI(
                     UpdateLoaderScreen(
                         mainScreenKey = mainScreenKey,
                         versionsScreenKey = versionsScreenKey,
+                        backToMainScreen = backToMainScreen,
                         version = version
                     ) { diffs, info ->
                         if (viewModel.installOperation !is UpdateLoaderOperation.None) {

@@ -1216,8 +1216,26 @@
     <string name="vibrate_kind_double_click">双击</string>
     <string name="vibrate_kind_heavy_click">重击</string>
     <string name="vibrate_kind_tick">滴答</string>
-
     <string name="festivals_new_year">新年快乐！</string>
     <string name="festivals_april_fools">愚人节快乐！</string>
     <string name="festivals_christmas">圣诞节快乐！</string>
+    <string name="language_english" translatable="false"></string>
+    <string name="language_uyghur" translatable="false"></string>
+    <string name="language_portuguese" translatable="false"></string>
+    <string name="empty_holder" translatable="false"></string>
+    <string name="language_arabic" translatable="false"></string>
+    <string name="language_italian" translatable="false"></string>
+    <string name="language_turkish" translatable="false"></string>
+    <string name="language_vietnamese" translatable="false"></string>
+    <string name="language_simplified_chinese" translatable="false"></string>
+    <string name="language_japanese" translatable="false"></string>
+    <string name="account_local_uuid" translatable="false"></string>
+    <string name="language_spanish" translatable="false"></string>
+    <string name="language_brazilian_portuguese" translatable="false"></string>
+    <string name="language_filipino" translatable="false"></string>
+    <string name="language_traditional_chinese" translatable="false"></string>
+    <string name="language_thai" translatable="false"></string>
+    <string name="language_korean" translatable="false"></string>
+    <string name="language_indonesian" translatable="false"></string>
+    <string name="language_russian" translatable="false"></string>
 </resources>

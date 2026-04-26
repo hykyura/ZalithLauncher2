@@ -56,6 +56,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -108,6 +109,7 @@ import com.movtery.zalithlauncher.ui.theme.onBackgroundColor
 import com.movtery.zalithlauncher.ui.theme.onCardColor
 import com.movtery.zalithlauncher.utils.animation.getAnimateTween
 import com.movtery.zalithlauncher.utils.festival.LocalFestivals
+import com.movtery.zalithlauncher.utils.file.formatFileSize
 import com.movtery.zalithlauncher.viewmodel.ErrorViewModel
 import com.movtery.zalithlauncher.viewmodel.EventViewModel
 import com.movtery.zalithlauncher.viewmodel.LaunchGameViewModel
@@ -672,6 +674,7 @@ private fun TaskMenu(
                             taskProgress = task.currentProgress,
                             taskMessageRes = task.currentMessageRes,
                             taskMessageArgs = task.currentMessageArgs,
+                            taskRateBytesPerSec = task.currentRateBytesPerSec,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 6.dp)
@@ -691,6 +694,7 @@ private fun TaskItem(
     taskProgress: Float,
     taskMessageRes: Int?,
     taskMessageArgs: Array<out Any>?,
+    taskRateBytesPerSec: Long,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.large,
     color: Color = cardColor(false),
@@ -736,14 +740,34 @@ private fun TaskItem(
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
+
+                @Composable
+                fun RateBytesPerSecText() {
+                    taskRateBytesPerSec.takeIf { it >= 0L }?.let { bytes ->
+                        val text = remember(bytes) { "${formatFileSize(bytes)}/s" }
+                        Text(
+                            text = text,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
+
                 if (taskProgress < 0) { //负数则代表不确定
-                    LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.weight(1f)
+                        )
+                        RateBytesPerSecText()
+                    }
                 } else {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         LinearProgressIndicator(
                             progress = { taskProgress },
@@ -751,9 +775,9 @@ private fun TaskItem(
                                 .weight(1f)
                                 .align(Alignment.CenterVertically)
                         )
+                        RateBytesPerSecText()
                         Text(
                             text = "${(taskProgress * 100).toInt()}%",
-                            modifier = Modifier.align(Alignment.CenterVertically),
                             style = MaterialTheme.typography.labelMedium
                         )
                     }

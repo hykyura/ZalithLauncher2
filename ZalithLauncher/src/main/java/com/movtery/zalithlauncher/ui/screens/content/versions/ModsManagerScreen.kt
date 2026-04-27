@@ -211,9 +211,18 @@ private class ModsManageViewModel(
 
     var modsState by mutableStateOf<LoadingState>(LoadingState.None)
 
-    private var job: Job? = null
 
-    fun refresh(context: Context? = null) {
+    /** 临时记录的模组数量 */
+    private var modsCount = FolderFileCounter(modsDir)
+
+    private var job: Job? = null
+    /**
+     * @param checkCount 刷新目录内文件数量记录
+     */
+    fun refresh(
+        context: Context? = null,
+        checkCount: Boolean = true
+    ) {
         job?.cancel()
         job = viewModelScope.launch {
             withContext(Dispatchers.Main) {
@@ -222,6 +231,7 @@ private class ModsManageViewModel(
             }
             modsState = LoadingState.Loading
             selectedMods.clear() //清空所有已选择的模组
+            if (checkCount) modsCount.checkDir()
             try {
                 allMods = modReader.readAllForRemote()
                 filterMods(context)
@@ -233,12 +243,12 @@ private class ModsManageViewModel(
         }
     }
 
-    /** 临时记录的模组数量 */
-    private var modsCount = FolderFileCounter(modsDir)
-    fun checkCountAndRefresh() {
+    fun checkCountAndRefresh(
+        context: Context? = null,
+    ) {
         val isUnchecked = modsCount.isUnchecked()
         if (modsCount.checkDir() && !isUnchecked && job == null) {
-            refresh()
+            refresh(context = context, checkCount = false)
         }
     }
 
@@ -260,7 +270,7 @@ private class ModsManageViewModel(
     }
 
     init {
-        refresh()
+        refresh(checkCount = false)
         startQueueProcessor()
     }
 
@@ -557,7 +567,7 @@ fun ModsManagerScreen(
         //页面创建时，检查一次模组数量，如果不同，则说明有增删
         //可自动刷新一次模组列表
         LaunchedEffect(Unit) {
-            viewModel.checkCountAndRefresh()
+            viewModel.checkCountAndRefresh(context)
         }
 
         DeleteAllOperation(

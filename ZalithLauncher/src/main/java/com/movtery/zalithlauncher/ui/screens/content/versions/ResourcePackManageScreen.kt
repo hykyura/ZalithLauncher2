@@ -158,6 +158,9 @@ private class ResourcePackManageViewModel(
      */
     var deleteAllOperation by mutableStateOf<DeleteAllOperation>(DeleteAllOperation.None)
 
+    /** 临时记录的资源包数量 */
+    private var packCount = FolderFileCounter(resourcePackDir)
+
     /**
      * 全选所有文件
      */
@@ -174,10 +177,16 @@ private class ResourcePackManageViewModel(
     }
 
     private var job: Job? = null
-    fun refresh() {
+    /**
+     * @param checkCount 刷新目录内文件数量记录
+     */
+    fun refresh(
+        checkCount: Boolean = true
+    ) {
         job = viewModelScope.launch {
             packState = LoadingState.Loading
             selectedPacks.clear()
+            if (checkCount) packCount.checkDir()
 
             withContext(Dispatchers.IO) {
                 val tempList = mutableListOf<ResourcePackInfo>()
@@ -200,18 +209,15 @@ private class ResourcePackManageViewModel(
         }
     }
 
-
-    /** 临时记录的资源包数量 */
-    private var packCount = FolderFileCounter(resourcePackDir)
     fun checkCountAndRefresh() {
         val isUnchecked = packCount.isUnchecked()
         if (packCount.checkDir() && !isUnchecked && job == null) {
-            refresh()
+            refresh(checkCount = false)
         }
     }
 
     init {
-        refresh()
+        refresh(checkCount = false)
     }
 
     fun updateFilter(filter: ResourcePackFilter) {

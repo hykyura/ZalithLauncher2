@@ -148,6 +148,9 @@ private class ShadersManageViewModel(
      */
     var deleteAllOperation by mutableStateOf<DeleteAllOperation>(DeleteAllOperation.None)
 
+    /** 临时记录的光影包数量 */
+    private var packCount = FolderFileCounter(shadersDir)
+
     /**
      * 全选所有文件
      */
@@ -164,10 +167,16 @@ private class ShadersManageViewModel(
     }
 
     private var job: Job? = null
-    fun refresh() {
+    /**
+     * @param checkCount 刷新目录内文件数量记录
+     */
+    fun refresh(
+        checkCount: Boolean = true
+    ) {
         job = viewModelScope.launch {
             shadersState = LoadingState.Loading
             selectedPacks.clear()
+            if (checkCount) packCount.checkDir()
 
             withContext(Dispatchers.IO) {
                 try {
@@ -193,17 +202,15 @@ private class ShadersManageViewModel(
         }
     }
 
-    /** 临时记录的光影包数量 */
-    private var packCount = FolderFileCounter(shadersDir)
     fun checkCountAndRefresh() {
         val isUnchecked = packCount.isUnchecked()
         if (packCount.checkDir() && !isUnchecked && job == null) {
-            refresh()
+            refresh(checkCount = false)
         }
     }
 
     init {
-        refresh()
+        refresh(checkCount = false)
     }
 
     fun updateFilter(name: String) {

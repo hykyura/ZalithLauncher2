@@ -46,7 +46,7 @@ class GameService : Service() {
             startForeground(
                 NOTIFICATION_ID_GAME_SERVICE,
                 notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             )
         } else {
             startForeground(NOTIFICATION_ID_GAME_SERVICE, notification)

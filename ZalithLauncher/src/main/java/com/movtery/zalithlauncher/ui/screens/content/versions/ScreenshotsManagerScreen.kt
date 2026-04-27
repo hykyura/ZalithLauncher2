@@ -22,6 +22,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -30,9 +31,11 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,7 +58,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,6 +87,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -674,6 +677,9 @@ private fun ScreenshotGrid(
 ) {
     list?.let { items ->
         if (items.isNotEmpty()) {
+            val context = LocalContext.current
+            val isSelectionMode = selected.isNotEmpty()
+
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 160.dp),
                 modifier = modifier,
@@ -685,11 +691,29 @@ private fun ScreenshotGrid(
                     ScreenshotItemLayout(
                         info = info,
                         selected = selected.contains(info),
-                        onClick = {
+                        isSelectionMode = isSelectionMode,
+                        onToggleSelect = {
                             if (selected.contains(info)) {
                                 removeFromSelected(info)
                             } else {
                                 addToSelected(info)
+                            }
+                        },
+                        onOpen = {
+                            try {
+                                // 唤起系统看图软件打开该图片
+                                val uri = FileProvider.getUriForFile(
+                                    context,
+                                    "${context.packageName}.fileprovider",
+                                    info.file
+                                )
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    setDataAndType(uri, "image/png")
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                lError("Failed to open image", e)
                             }
                         }
                     )
@@ -713,13 +737,15 @@ private fun ScreenshotGrid(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ScreenshotItemLayout(
     modifier: Modifier = Modifier,
     info: ScreenshotInfo,
     selected: Boolean,
-    onClick: () -> Unit = {},
+    isSelectionMode: Boolean,
+    onToggleSelect: () -> Unit,
+    onOpen: () -> Unit,
     itemColor: Color = itemColor(),
     itemContentColor: Color = onItemColor(),
     borderColor: Color = MaterialTheme.colorScheme.primary,
@@ -732,16 +758,33 @@ private fun ScreenshotItemLayout(
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
     }
 
+    // 移除 Surface 自带的 onClick，将点击逻辑下放到内部的 Box 进行统一处理
     Surface(
         modifier = modifier
             .graphicsLayer(scaleY = scale.value, scaleX = scale.value)
             .border(width = borderWidth, color = borderColor, shape = shape),
-        onClick = onClick,
         shape = shape,
         color = itemColor,
         contentColor = itemContentColor,
     ) {
-        Box(modifier = Modifier.aspectRatio(16f / 9f)) {
+        Box(
+            modifier = Modifier
+                .aspectRatio(16f / 9f)
+                .combinedClickable(
+                    onClick = {
+                        if (isSelectionMode) {
+                            onToggleSelect()
+                        } else {
+                            onOpen()
+                        }
+                    },
+                    onLongClick = {
+                        if (!isSelectionMode) {
+                            onToggleSelect()
+                        }
+                    }
+                )
+        ) {
             // 使用 Coil 加载图片缩略图
             AsyncImage(
                 model = info.file,

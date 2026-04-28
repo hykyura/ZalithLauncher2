@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
  */
 
-package com.movtery.zalithlauncher.game.version.installed.utils
+package net.hykyura.zalithone.game.version.installed.utils
 
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue

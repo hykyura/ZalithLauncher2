@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
  */
 
-package com.movtery.zalithlauncher.game.version.multiplayer
+package net.hykyura.zalithone.game.version.multiplayer
 
-import com.movtery.zalithlauncher.utils.network.ServerAddress
+import net.hykyura.zalithone.utils.network.ServerAddress
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

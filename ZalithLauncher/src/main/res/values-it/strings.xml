@@ -172,4 +172,5 @@
     <string name="sort_by_file_name">Ordina per Nome del file</string>
     <string name="sort_by_last_modified">Ordina per Ultimo Modificato</string>
     <string name="sort_by_last_played">Ordina per ultimo giocato</string>
+    <string name="generic_unofficial_warning">Questa app non è ufficiale ed è un fork del repository ZalithLauncher. Ti permette di giocare a Minecraft Java su Android senza bisogno di un account Microsoft. Puoi giocare tranquillamente con questa app, ma un giorno acquista la versione originale di Minecraft dal sito ufficiale, così non sarai più coinvolto nella pirateria :p</string>
 </resources>

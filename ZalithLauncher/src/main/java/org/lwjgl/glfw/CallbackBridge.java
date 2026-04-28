@@ -1,7 +1,7 @@
 package org.lwjgl.glfw;
 
-import static com.movtery.zalithlauncher.bridge.ZLBridgeStatesKt.CURSOR_DISABLED;
-import static com.movtery.zalithlauncher.bridge.ZLBridgeStatesKt.CURSOR_ENABLED;
+import static net.hykyura.zalithone.bridge.ZLBridgeStatesKt.CURSOR_DISABLED;
+import static net.hykyura.zalithone.bridge.ZLBridgeStatesKt.CURSOR_ENABLED;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -12,13 +12,13 @@ import android.view.Choreographer;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 
-import com.movtery.zalithlauncher.bridge.CursorShape;
-import com.movtery.zalithlauncher.bridge.NativeLibraryLoader;
-import com.movtery.zalithlauncher.bridge.ZLBridgeStates;
-import com.movtery.zalithlauncher.bridge.ZLNativeInvoker;
-import com.movtery.zalithlauncher.context.ContextsKt;
-import com.movtery.zalithlauncher.game.keycodes.LwjglGlfwKeycode;
-import com.movtery.zalithlauncher.info.InfoDistributor;
+import net.hykyura.zalithone.bridge.CursorShape;
+import net.hykyura.zalithone.bridge.NativeLibraryLoader;
+import net.hykyura.zalithone.bridge.ZLBridgeStates;
+import net.hykyura.zalithone.bridge.ZLNativeInvoker;
+import net.hykyura.zalithone.context.ContextsKt;
+import net.hykyura.zalithone.game.keycodes.LwjglGlfwKeycode;
+import net.hykyura.zalithone.info.InfoDistributor;
 
 import java.util.function.Consumer;
 

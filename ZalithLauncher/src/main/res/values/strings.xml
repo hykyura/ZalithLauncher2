@@ -1240,4 +1240,5 @@
     <string name="festivals_new_year">Happy New Year!</string>
     <string name="festivals_april_fools">Happy April Fools\' Day!</string>
     <string name="festivals_christmas">Merry Christmas!</string>
+    <string name="generic_unofficial_warning">This app is unofficial and it\'s forked from ZalithLauncher Repository. This app let you plays the Minecraft Java on Android without Microsoft Account required. You can play normally with this app, but someday buy Original Minecraft from Official Website so that you are free from piracy :p</string>
 </resources>

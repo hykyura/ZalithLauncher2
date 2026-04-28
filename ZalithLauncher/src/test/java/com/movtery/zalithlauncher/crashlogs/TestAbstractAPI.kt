@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
  */
 
-package com.movtery.zalithlauncher.crashlogs
+package net.hykyura.zalithone.crashlogs
 
-import com.movtery.zalithlauncher.crashlogs.platform.MCLogsAPI
-import com.movtery.zalithlauncher.crashlogs.platform.MirroredAPI
+import net.hykyura.zalithone.crashlogs.platform.MCLogsAPI
+import net.hykyura.zalithone.crashlogs.platform.MirroredAPI
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 

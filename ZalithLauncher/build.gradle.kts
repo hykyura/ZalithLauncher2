@@ -14,7 +14,7 @@ plugins {
 }
 apply(plugin = "stringfog")
 
-val zalithPackageName = "com.movtery.zalithlauncher"
+val zalithPackageName = "net.hykyura.zalithone"
 val launcherAPPName = project.findProperty("launcher_app_name") as? String ?: error("The \"launcher_app_name\" property is not set in gradle.properties.")
 val launcherName = project.findProperty("launcher_name") as? String ?: error("The \"launcher_name\" property is not set in gradle.properties.")
 val launcherShortName = project.findProperty("launcher_short_name") as? String ?: error("The \"launcher_short_name\" property is not set in gradle.properties.")
@@ -79,8 +79,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("releaseBuild")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -131,7 +131,7 @@ android {
     }
 
     splits {
-        val arch = System.getProperty("arch", "all").takeIf { it != "all" } ?: return@splits
+        val arch = System.getProperty("arch", "all")
         abi {
             isEnable = true
             reset()
@@ -140,6 +140,10 @@ android {
                 "arm64" -> include("arm64-v8a")
                 "x86" -> include("x86")
                 "x86_64" -> include("x86_64")
+                "all" -> {
+                    include("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
+                    isUniversalApk = true
+                }
             }
         }
     }

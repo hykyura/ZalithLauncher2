@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
  */
 
-package com.movtery.zalithlauncher.game.version.multiplayer
+package net.hykyura.zalithone.game.version.multiplayer
 
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.addJsonObject

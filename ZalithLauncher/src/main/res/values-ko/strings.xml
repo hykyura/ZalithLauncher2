@@ -736,4 +736,5 @@
     <string name="saves_manage_exists">동일한 이름의 세이브가 존재합니다</string>
     <string name="saves_manage_save_name">이름 저장</string>
     <string name="saves_manage_backup">세이브 백업</string>
+    <string name="generic_unofficial_warning">이 앱은 비공식 앱이며 ZalithLauncher 저장소에서 포크된 것입니다. 이 앱을 사용하면 마이크로소프트 계정 없이도 안드로이드에서 마인크래프트 자바 에디션을 플레이할 수 있습니다. 이 앱으로 정상적으로 게임을 즐길 수 있지만, 언젠가는 공식 웹사이트에서 정식 마인크래프트를 구매하여 불법 복제의 문제에서 벗어나시길 바랍니다 :p</string>
 </resources>

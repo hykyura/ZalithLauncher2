@@ -808,4 +808,5 @@
     <string name="control_editor_edit_text_italic">Habilitar Itálico</string>
     <string name="control_editor_edit_text_underline">Habilitar Sublinhado</string>
     <string name="settings_launcher_background_title">Fundo do Launcher</string>
+    <string name="about_launcher_modder_hykyura_text">Lama ou %s</string>
 </resources>

@@ -1137,4 +1137,5 @@
     <string name="page_title_select_files">パスの選択</string>
     <string name="unpack_screen_jre25">Java 25 環境 (Minecraft 26.1 以降に必要)</string>
     <string name="versions_install_loader">ローダーのインストール</string>
+    <string name="about_launcher_modder_hykyura_text">泥 %s</string>
 </resources>

@@ -1048,4 +1048,5 @@
     <string name="crash_link_share_tip">Cái ứng dụng ác ma này sẽ ỉa chảy và bạn sẽ nhận được liên kết để mua trò chơi. Cảm ơn vì đã hiểu.</string>
     <string name="account_local_uuid_invalid">Gem không hợp lệ</string>
     <string name="account_local_uuid_tip_4">Tùy chọn này cần phải mua gem mới xài được.</string>
+    <string name="about_launcher_modder_hykyura_text">Bùn hay %s</string>
 </resources>

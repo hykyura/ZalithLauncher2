@@ -1186,4 +1186,5 @@
     <string name="screenshots_manage_export_selected_message">Exportar %1$d prints selecionadas para a galeria do celular?</string>
     <string name="unpack_screen_jna">Permite que o Minecraft chame diretamente funções de baixo nível do sistema operacional.</string>
     <string name="generic_unofficial_warning">Este aplicativo não é oficial e é uma versão derivada do repositório do ZalithLauncher. Ele permite que você jogue o Minecraft Java no Android sem precisar de uma conta da Microsoft. Você pode jogar normalmente com este aplicativo, mas, algum dia, compre o Minecraft original no site oficial para se livrar da pirataria :p</string>
+    <string name="about_launcher_modder_hykyura_text">Lama ou %s</string>
 </resources>

@@ -66,6 +66,7 @@ import net.hykyura.zalithone.path.URL_COMMUNITY
 import net.hykyura.zalithone.path.URL_MCMOD
 import net.hykyura.zalithone.path.URL_PROJECT
 import net.hykyura.zalithone.path.URL_SUPPORT
+import net.hykyura.zalithone.path.URL_HYKYURA
 import net.hykyura.zalithone.path.URL_WEBLATE
 import net.hykyura.zalithone.ui.base.BaseScreen
 import net.hykyura.zalithone.ui.components.AnimatedLazyColumn
@@ -123,12 +124,25 @@ fun AboutInfoScreen(
                         ButtonIconItem(
                             icon = painterResource(R.drawable.img_movtery),
                             title = stringResource(R.string.about_launcher_author_movtery_title),
-                            text = stringResource(R.string.about_launcher_author_movtery_text, InfoDistributor.LAUNCHER_NAME),
+                            text = stringResource(R.string.about_launcher_author_movtery_text, InfoDistributor.ORIGINAL_LAUNCHER_NAME),
                             button = {
                                 Button(
                                     onClick = { openLink(URL_SUPPORT) }
                                 ) {
                                     Text(text = stringResource(R.string.about_sponsor))
+                                }
+                            }
+                        )
+
+                        ButtonIconItem(
+                            icon = painterResource(R.drawable.img_hykyura),
+                            title = stringResource(R.string.about_launcher_modder_hykyura_title),
+                            text = stringResource(R.string.about_launcher_modder_hykyura_text, InfoDistributor.LAUNCHER_NAME),
+                            button = {
+                                Button(
+                                    onClick = { openLink(URL_HYKYURA) }
+                                ) {
+                                    Text(text = "GitHub")
                                 }
                             }
                         )
